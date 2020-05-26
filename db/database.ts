@@ -1,12 +1,11 @@
 import { Client } from "https://deno.land/x/postgres/mod.ts"
 import {DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME, DB_HOST} from "../config.ts"
 
-let port :number;
-if (typeof DB_PORT === 'string'){
-    port = parseInt(DB_PORT)
-}
+const port :number = parseInt(DB_PORT);
+ 
+
 class Database {
-        public client:Client = new Client({
+    private client:Client = new Client({
         user: DB_USERNAME,
         database: DB_NAME,
         hostname: DB_HOST,
@@ -17,6 +16,9 @@ class Database {
     constructor(){
         this.connect();
     }
+    public getClient(){
+        return this.client;
+    }
     
 
     async connect(){
@@ -25,4 +27,4 @@ class Database {
 
 }
 
-export default new Database().client;
+export default new Database().getClient();
