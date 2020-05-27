@@ -1,27 +1,57 @@
 import client  from "../db/database.ts"
-import {hashpw, gensalt} from "https://deno.land/x/bcrypt/bcrypt/bcrypt.ts"
 
 class UserRepo {
     async addUser(userData: any){
 
-        const salt = await gensalt(10);
-        const hashedPassword = await hashpw(userData.password, salt);
-        return client.query(`INSERT INTO beers name = '${userData.name}', password = '${hashedPassword}', email = '${userData.email}'`)
+       
+         const user = await client.query(
+            `INSERT INTO users (username, password, email, createdat) VALUES ($1, $2, $3, $4) RETURNING id`, 
+            userData.username, 
+            userData.password, 
+            userData.email,
+            new Date
+        )
+        return user;
     }
 
     async getUser(id: string){
-        return client.query(``);
+         const result = await  client.query(`SELECT * FROM users WHERE id=${id}`);
+         return result;
     }
     async getUsers(){
-
+        return client.query(`SELECT email,username, id from users`);
     }
 
-    async updateUser(id: string, updateData: any){
+    async updateUser( query: any){
+        const result = await client.query(query);
+        if(result.rowCount){
+            return {
+                status: true,
+                msg: "User has been updated"
+            }
+        }else{
+            return {
+                status: false,
+                msg: "cannot update user"
+            }
+        }
 
     }
 
     async deleteUser(id: string){
+        const result = await client.query(`DELETE FROM users where id=${id}`);
 
+        if(result.rowCount){
+            return {
+                status: true,
+                msg: "User has been deleted"
+            }
+        }else{
+            return {
+                status: false,
+                msg: "cannot delete user"
+            }
+        }
     }
 }   
 

@@ -70,7 +70,10 @@ export class BeerController{
 
     async deleteBeer ({params, response}: {params: {id: string}, response: any}) {
         const id = params.id;
-        const result: any = await deleteBeer(id);
+        const result = await deleteBeer(id);
+        if(!result.status){
+            response.status = 404;
+        }
         response.body = result;
     }
 }

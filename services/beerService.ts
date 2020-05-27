@@ -2,7 +2,7 @@ import beerRepo from "../repositories/beerRepo.ts";
 import {Beer} from "../types.ts"
 
 export const createBeer = async (beerData: Beer)=>{
-    const newBeer:any = {
+    const newBeer:Beer = {
         name: beerData.name,
         brand: beerData.brand,
         isPremium: beerData.isPremium,
